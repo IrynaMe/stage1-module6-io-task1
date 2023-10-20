@@ -1,16 +1,22 @@
 package com.epam.mjc.io;
 
 import java.io.*;
-// https://github.com/IrynaMe/stage1-module6-io-task1/blob/21a894d16d9cc18db489ffabe46e5096bb9caa23/src/main/resources/Profile.txt
-
 
 public class FileReader {
+// https://github.com/IrynaMe/stage1-module6-io-task1/blob/21a894d16d9cc18db489ffabe46e5096bb9caa23/src/main/resources/Profile.txt
 
     public Profile getDataFromFile(File file) {
+        FileInputStream fileInputStream = null;
+        InputStreamReader inputStreamReader = null;
+        BufferedReader reader = null;
 
-        try (FileInputStream fileInputStream = new FileInputStream(file);
-             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream);
-             BufferedReader reader = new BufferedReader(inputStreamReader)) {
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+
+           /* fileInputStream = new FileInputStream(file);
+            inputStreamReader = new InputStreamReader(fileInputStream);
+            reader = new BufferedReader(inputStreamReader);
+*/
             String line;
             String name = null;
             Integer age = null;
@@ -39,7 +45,7 @@ public class FileReader {
                             System.out.println("Unknown key");
                             break;
                     }
-                }else {
+                } else {
                     System.out.println("Unknown line format");
                 }
             }
@@ -47,6 +53,20 @@ public class FileReader {
             return new Profile(name, age, email, phone);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+                if (inputStreamReader != null) {
+                    inputStreamReader.close();
+                }
+                if (fileInputStream != null) {
+                    fileInputStream.close();
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
